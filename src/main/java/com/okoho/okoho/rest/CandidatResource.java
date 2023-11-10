@@ -1,5 +1,6 @@
 package com.okoho.okoho.rest;
 
+import com.okoho.okoho.domain.Address;
 import com.okoho.okoho.domain.Candidat;
 import com.okoho.okoho.domain.FileUrl;
 import com.okoho.okoho.domain.ItemCandidat;
@@ -74,6 +75,21 @@ public class CandidatResource {
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId()))
             .body(result);
     }
+    @GetMapping("/candidats/search/live")
+    public ResponseEntity<List<Candidat>> searchCandidats(Pageable pageable,
+    @RequestParam String keyword,
+    @RequestParam String location,
+    @RequestParam String category,
+    @RequestParam String dateposted,
+    @RequestParam String education,
+    @RequestParam String experience
+    ) {
+        log.debug("REST request to get a page of Candidat");
+        Page<Candidat> page = candidatService.findSearch(pageable,keyword,location,
+        category,dateposted,education,experience);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,ServletUriComponentsBuilder.fromCurrentRequest().toUriString());
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
     @PostMapping("/candidats/addcv")
     public ResponseEntity<FileUrl> addCv(@RequestBody FileUrlDTO fileUrlDTO) throws URISyntaxException {
 
@@ -83,6 +99,16 @@ public class CandidatResource {
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, null))
                 .body(result);
     }
+    @PostMapping("/candidats/address")
+    public ResponseEntity<Address> addAddress(@RequestBody Address address) throws URISyntaxException {
+
+        Address result = candidatService.addAddress(address);
+        return ResponseEntity
+                .created(new URI("/v1/candidats/address"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, null))
+                .body(result);
+    }
+  
     @PostMapping("/candidats/additem")
     public ResponseEntity<ItemCandidat> addItem(@RequestBody ItemCandidatDTO itemCandidatDTO) throws URISyntaxException {
 
@@ -227,6 +253,11 @@ public class CandidatResource {
     @DeleteMapping("/candidats/removeitem/{id}")
     public ResponseEntity<Void> deleteItem(@PathVariable String id) {
         candidatService.removeItemCandidat(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id)).build();
+    }
+    @DeleteMapping("/candidats/removeaddress/{id}")
+    public ResponseEntity<Void> deleteAddress(@PathVariable String id) {
+        candidatService.removeAddress(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id)).build();
     }
     @GetMapping("/candidats/cvs/{id}")

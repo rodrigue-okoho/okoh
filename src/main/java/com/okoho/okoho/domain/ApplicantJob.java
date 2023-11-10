@@ -20,7 +20,7 @@ public class ApplicantJob {
     @Field("offerJob")
     private OfferJob offerJob;
     @Field("status")
-    private String status;
+    private String status="PENDING";
     @Field("created_at")
     private LocalDate createdAt;
     @Field("update_at")

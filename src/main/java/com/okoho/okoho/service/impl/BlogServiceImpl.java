@@ -43,7 +43,6 @@ public class BlogServiceImpl implements BlogService {
             fileurl.setDomain(domain + "images/");
             blog.setImage(fileUrlRepository.save(fileurl));
         }
-
         blogRepository.save(blog);
         return blog;
     }

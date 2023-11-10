@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.okoho.okoho.domain.CategoryJob;
 import com.okoho.okoho.repository.CategoryJobRepository;
 import com.okoho.okoho.service.CategoryJobService;
+import com.okoho.okoho.service.dto.CategoryJobDTO;
 @Service
 public class CategoryJobServiceImpl implements CategoryJobService{
 
@@ -19,8 +20,19 @@ public class CategoryJobServiceImpl implements CategoryJobService{
     }
 
     @Override
-    public CategoryJob save(CategoryJob categoryJob) {
-        return categoryJobRepository.save(categoryJob);
+    public CategoryJob save(CategoryJobDTO categoryJob) {
+        if(categoryJob.getId()==null){
+            
+        }
+    
+        CategoryJob category=new CategoryJob(); 
+        if(categoryJob.getId()!=null){
+            var cat=categoryJobRepository.findById(categoryJob.getId());
+            category=cat.get();  
+        }
+        category.setDescription(categoryJob.getDescription());
+        category.setTitle(categoryJob.getTitle());
+        return categoryJobRepository.save(category);
     }
 
     @Override

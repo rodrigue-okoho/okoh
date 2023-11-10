@@ -1,9 +1,12 @@
 package com.okoho.okoho.rest;
 
+import com.okoho.okoho.domain.Personnel;
 import com.okoho.okoho.repository.PersonnelRepository;
 import com.okoho.okoho.service.PersonnelService;
+import com.okoho.okoho.service.dto.PersonnelDDTO;
 import com.okoho.okoho.service.dto.PersonnelDTO;
 import com.okoho.okoho.utils.HeaderUtil;
+import com.okoho.okoho.utils.PaginationUtil;
 import com.okoho.okoho.utils.ResponseUtil;
 import com.okoho.okoho.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -14,8 +17,12 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  * REST controller for managing {@link com.okoho.okoho.domain.Personnel}.
@@ -48,15 +55,12 @@ public class PersonnelResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException
      */
-    @PostMapping("/personnel")
-    public ResponseEntity<PersonnelDTO> createPersonnel(@RequestBody PersonnelDTO personnelDTO) throws URISyntaxException, BadRequestAlertException {
+    @PostMapping("/personnels")
+    public ResponseEntity<PersonnelDTO> createPersonnel(@RequestBody PersonnelDDTO personnelDTO) throws URISyntaxException, BadRequestAlertException {
         log.debug("REST request to save Personnel : {}", personnelDTO);
-        if (personnelDTO.getId() != null) {
-            throw new BadRequestAlertException("A new personnel cannot already have an ID", ENTITY_NAME, "idexists");
-        }
         PersonnelDTO result = personnelService.save(personnelDTO);
         return ResponseEntity
-            .created(new URI("/api/personnel/" + result.getId()))
+            .created(new URI("/api/personnels/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId()))
             .body(result);
     }
@@ -72,7 +76,7 @@ public class PersonnelResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException
      */
-    @PutMapping("/personnel/{id}")
+    @PutMapping("/personnels/{id}")
     public ResponseEntity<PersonnelDTO> updatePersonnel(
         @PathVariable(value = "id", required = false) final String id,
         @RequestBody PersonnelDTO personnelDTO
@@ -89,7 +93,7 @@ public class PersonnelResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        PersonnelDTO result = personnelService.save(personnelDTO);
+        PersonnelDTO result = personnelService.partialUpdate(personnelDTO).get();
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, personnelDTO.getId()))
@@ -143,14 +147,21 @@ public class PersonnelResource {
         log.debug("REST request to get all Personnel");
         return personnelService.findAll();
     }
-
+    @GetMapping("/personnels")
+    public ResponseEntity<List<Personnel>> getAllRecruteurs(Pageable pageable) {
+        log.debug("REST request to get all Recruteurs");
+        //return recruteurService.findAll();
+        Page<Personnel> page = personnelService.findAllWithEagerRelationships(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,ServletUriComponentsBuilder.fromCurrentRequest().toUriString());
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
     /**
      * {@code GET  /personnel/:id} : get the "id" personnel.
      *
      * @param id the id of the personnelDTO to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the personnelDTO, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/personnel/{id}")
+    @GetMapping("/personnels/{id}")
     public ResponseEntity<PersonnelDTO> getPersonnel(@PathVariable String id) {
         log.debug("REST request to get Personnel : {}", id);
         Optional<PersonnelDTO> personnelDTO = personnelService.findOne(id);
@@ -163,7 +174,7 @@ public class PersonnelResource {
      * @param id the id of the personnelDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/personnel/{id}")
+    @DeleteMapping("/personnels/{id}")
     public ResponseEntity<Void> deletePersonnel(@PathVariable String id) {
         log.debug("REST request to delete Personnel : {}", id);
         personnelService.delete(id);

@@ -152,6 +152,22 @@ public class OfferJobResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,ServletUriComponentsBuilder.fromCurrentRequest().toUriString());
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
+    @GetMapping("/offer-jobs/search/jobs")
+    public ResponseEntity<List<OfferJob>> searchOfferJobs(Pageable pageable,
+    @RequestParam String query,
+    @RequestParam String location,
+    @RequestParam String category,
+    @RequestParam String experience,
+    @RequestParam String dateposted,
+    @RequestParam String salary,
+    @RequestParam String type
+    ) {
+        log.debug("REST request to get a page of OfferJobs");
+        Page<OfferJob> page = offerJobService.findSearch(pageable,query, location, category,
+        experience, dateposted, salary, type);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,ServletUriComponentsBuilder.fromCurrentRequest().toUriString());
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
     @GetMapping("/offer-jobs/orders")
     public ResponseEntity<List<OfferJob>> getAllOfferJobslast(Pageable pageable) {
         log.debug("REST request to get a page of OfferJobs");

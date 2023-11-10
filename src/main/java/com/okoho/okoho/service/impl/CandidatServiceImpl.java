@@ -1,5 +1,6 @@
 package com.okoho.okoho.service.impl;
 
+import com.okoho.okoho.domain.Address;
 import com.okoho.okoho.domain.Candidat;
 import com.okoho.okoho.domain.FileUrl;
 import com.okoho.okoho.domain.ItemCandidat;
@@ -24,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -42,15 +44,20 @@ public class CandidatServiceImpl implements CandidatService {
     private final FileUrlRepository fileUrlRepository;
     private final ItemCandidatRepository itemCandidatRepository;
     private final CategoryJobRepository categoryJobRepository;
+
+    private final AddressRepository addressRepository;
     public CandidatServiceImpl(FileService fileService,
                                UserAccountRepository userAccountRepository, ItemCandidatRepository itemCandidatRepository,
-                               CandidatRepository candidatRepository, FileUrlRepository fileUrlRepository, CategoryJobRepository categoryJobRepository) {
+                               CandidatRepository candidatRepository, AddressRepository addressRepository,
+                               FileUrlRepository fileUrlRepository, 
+                               CategoryJobRepository categoryJobRepository) {
         this.fileService = fileService;
         this.candidatRepository = candidatRepository;
         this.userAccountRepository = userAccountRepository;
         this.fileUrlRepository = fileUrlRepository;
         this.itemCandidatRepository=itemCandidatRepository;
         this.categoryJobRepository = categoryJobRepository;
+        this.addressRepository=addressRepository;
     }
 
     @Override
@@ -83,7 +90,7 @@ public class CandidatServiceImpl implements CandidatService {
                     candidat.setJobTitle(registerRequest.getJobTitle());
                     candidat.setQualification(registerRequest.getQualification());
                     candidat.setSalaryType(registerRequest.getSalaryType());
-                    registerRequest.getCategoryJobs().stream().forEach(e->candidat.addCategoryJobs(categoryJobRepository.findById(e).get()));
+                   // registerRequest.getCategoryJobs().stream().forEach(e->candidat.addCategoryJobs(categoryJobRepository.findById(e).get()));
 
                     break;
                 case "sociale":
@@ -227,10 +234,16 @@ public class CandidatServiceImpl implements CandidatService {
         item.setDescription(itemCandidatDTO.getDescription());
         item.setLibelle(itemCandidatDTO.getLibelle());
         item.setLocation(itemCandidatDTO.getLocation());
+        item.setCity(itemCandidatDTO.getCity());
+        item.setCountry(itemCandidatDTO.getCountry());
+        item.setLine1(itemCandidatDTO.getLine1());
+        item.setLine2(itemCandidatDTO.getLine2());
         item.setItemType(itemCandidatDTO.getItemType());
         if(item.getItemType().equals("education")){
+            item.setTraning_body(itemCandidatDTO.getTraning_body());
             candidat.addEducation(itemCandidatRepository.save(item));
         }else if(item.getItemType().equals("work")){
+            item.setEmployer_name(itemCandidatDTO.getEmployer_name());
             candidat.addWork(itemCandidatRepository.save(item));
         }else if(item.getItemType().equals("award")){
             candidat.addAwards(itemCandidatRepository.save(item));
@@ -242,5 +255,31 @@ public class CandidatServiceImpl implements CandidatService {
     @Override
     public void removeItemCandidat(String idItem) {
        itemCandidatRepository.deleteById(idItem);
+    }
+
+    @Override
+    public Address addAddress(Address address) {
+        var candidat=candidatRepository.findById(address.getId()).get();
+        address.setId(null);
+        addressRepository.save(address);
+        candidat.addAddress(address);
+        candidatRepository.save(candidat);
+        return address;
+    }
+
+    @Override
+    public void removeAddress(String idItem) {
+        addressRepository.deleteById(idItem);
+    }
+
+    @Override
+    public Page<Candidat> findSearch(Pageable pageable, String keyword, String location, String category,
+            String dateposted, String education, String experience) {
+                var items= candidatRepository.findAll();
+                if(!keyword.isBlank()){
+                    System.out.print(keyword);
+                 items=   items.stream().filter(e->e.getUserAccount().getFirstName().contains(keyword)).collect(Collectors.toList());
+                }
+                return new PageImpl<>(items,pageable, items.size());
     }
 }

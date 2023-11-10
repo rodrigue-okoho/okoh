@@ -5,6 +5,7 @@ import com.okoho.okoho.repository.CategoryJobRepository;
 import com.okoho.okoho.repository.DomainActivityRepository;
 import com.okoho.okoho.service.CategoryJobService;
 import com.okoho.okoho.service.DomainActivityService;
+import com.okoho.okoho.service.dto.CategoryJobDTO;
 import com.okoho.okoho.service.dto.DomainActivityDTO;
 import com.okoho.okoho.utils.HeaderUtil;
 import com.okoho.okoho.utils.PaginationUtil;
@@ -59,12 +60,9 @@ public class CategoryJobResource {
      * @throws BadRequestAlertException
      */
     @PostMapping("/category-jobs")
-    public ResponseEntity<CategoryJob> createCategoryJob(@RequestBody CategoryJob categoryJob)
+    public ResponseEntity<CategoryJob> createCategoryJob(@RequestBody CategoryJobDTO categoryJob)
         throws URISyntaxException, BadRequestAlertException {
         log.debug("REST request to save CategoryJob : {}", categoryJob);
-        if (categoryJob.getId() != null) {
-            throw new BadRequestAlertException("A new categoryJob cannot already have an ID", ENTITY_NAME, "idexists");
-        }
         CategoryJob result = categoryJobService.save(categoryJob);
         return ResponseEntity
             .created(new URI("/api/category-jobs/" + result.getId()))
@@ -100,7 +98,7 @@ public class CategoryJobResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        CategoryJob result = categoryJobService.save(categoryJob);
+        CategoryJob result = categoryJobService.partialUpdate(categoryJob).get();
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, categoryJob.getId()))

@@ -20,6 +20,8 @@ public interface ApplicantJobRepository extends MongoRepository<ApplicantJob, St
     @Query("{}")
     List<ApplicantJob> findAllWithEagerRelationships();
     @Query("{}")
+    Page<ApplicantJob> findAllWithEagerRelationships(Pageable pageable);
+    @Query("{}")
     Page<ApplicantJob> findByCandidat(Pageable pageable,Candidat candidat);
     
     Optional<ApplicantJob> findFirstByCandidatAndOfferJob(Candidat candidat, OfferJob offerJob);

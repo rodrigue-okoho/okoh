@@ -39,6 +39,14 @@ public interface OfferJobService {
     Page<OfferJob> findByEntreprise(Pageable pageable,String entreprise);
     List<OfferJob> findByEntreprise(String entreprise);
     Page<OfferJob> findAlertJobByCandidat(Pageable pageable,String candidat);
+    Page<OfferJob> findSearch(Pageable pageable,
+    String query,
+    String location,
+    String category,
+    String experience,
+    String dateposted,
+    String salary,
+    String type);
     /**
      * Get the "id" offerJob.
      *

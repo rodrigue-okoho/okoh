@@ -1,6 +1,7 @@
 package com.okoho.okoho.service;
 
 import com.okoho.okoho.domain.CategoryJob;
+import com.okoho.okoho.service.dto.CategoryJobDTO;
 import com.okoho.okoho.service.dto.DomainActivityDTO;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -16,7 +17,7 @@ public interface CategoryJobService {
      * @param CategoryJob the entity to save.
      * @return the persisted entity.
      */
-    CategoryJob save(CategoryJob categoryJob);
+    CategoryJob save(CategoryJobDTO categoryJob);
 
     /**
      * Partially updates a categoryJob.

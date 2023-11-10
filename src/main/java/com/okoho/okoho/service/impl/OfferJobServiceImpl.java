@@ -132,4 +132,34 @@ public class OfferJobServiceImpl implements OfferJobService {
                 .collect(Collectors.toList());
         return new PageImpl<>(jobs,pageable, jobs.size());
     }
+
+    @Override
+    public Page<OfferJob> findSearch(Pageable pageable, String query, String location, String category,
+            String experience, String dateposted, String salary, String type) {
+                var jobs= offerJobRepository.findAll();
+                if(!query.isBlank()){
+                   // System.out.print(query);
+                 jobs=   jobs.stream().filter(e->e.getTitle().startsWith(query)).collect(Collectors.toList());
+                }
+                if(!location.isBlank() || location !="undefined"){
+                    System.out.print(location);
+                   jobs=jobs.stream().filter(e -> {
+                        var res=false;
+                        if(e.getTown()==location || e.getRecruteur().getBp()==location){
+                            res=true;
+                        }
+                        return res;
+                    }).collect(Collectors.toList());
+                }
+                if(!category.isBlank()){
+                    jobs.stream().filter(e -> {
+                        var res=false;
+                        if(e.getTown().startsWith(location) || e.getRecruteur().getBp()==location){
+                            res=true;
+                        }
+                        return res;
+                    }).collect(Collectors.toList());
+                }
+                return new PageImpl<>(jobs,pageable, jobs.size());
+    }
 }

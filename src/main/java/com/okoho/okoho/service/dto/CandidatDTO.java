@@ -55,7 +55,7 @@ public class CandidatDTO implements Serializable {
     private String latitude;
     private String longitude;
     private String address;
-    private Set<String> categoryJobs= new HashSet<>();
+    //private Set<String> categoryJobs= new HashSet<>();
     private String placeofborn;
     private String dob;
 
@@ -75,13 +75,13 @@ public class CandidatDTO implements Serializable {
         this.dob = dob;
     }
 
-    public Set<String> getCategoryJobs() {
+/*     public Set<String> getCategoryJobs() {
         return categoryJobs;
     }
 
     public void setCategoryJobs(Set<String> categoryJobs) {
         this.categoryJobs = categoryJobs;
-    }
+    } */
 
     public String getMode() {
         return this.mode;

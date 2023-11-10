@@ -59,7 +59,7 @@ private final RecruteurRepository recruteurRepository;
 
     @Override
     public Page<ApplicantJob> findAllWithEagerRelationships(Pageable pageable) {
-        return findAllWithEagerRelationships(pageable);
+        return applicantJobRepository.findAllWithEagerRelationships(pageable);
     }
 
     @Override

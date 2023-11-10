@@ -1,8 +1,13 @@
 package com.okoho.okoho.service;
 
+import com.okoho.okoho.domain.Personnel;
+import com.okoho.okoho.service.dto.PersonnelDDTO;
 import com.okoho.okoho.service.dto.PersonnelDTO;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Service Interface for managing {@link com.okoho.okoho.domain.Personnel}.
@@ -14,7 +19,7 @@ public interface PersonnelService {
      * @param personnelDTO the entity to save.
      * @return the persisted entity.
      */
-    PersonnelDTO save(PersonnelDTO personnelDTO);
+    PersonnelDTO save(PersonnelDDTO personnelDTO);
 
     /**
      * Partially updates a personnel.
@@ -30,7 +35,7 @@ public interface PersonnelService {
      * @return the list of entities.
      */
     List<PersonnelDTO> findAll();
-
+    Page<Personnel> findAllWithEagerRelationships(Pageable pageable);
     /**
      * Get the "id" personnel.
      *

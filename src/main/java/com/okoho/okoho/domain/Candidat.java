@@ -78,6 +78,9 @@ public class Candidat {
     @DBRef
     @Field("awards")
     private Set<ItemCandidat> awards = new HashSet<>();
+    @DBRef
+    @Field("addresses")
+    private Set<Address> addresses = new HashSet<>();
     public String getTown() {
         return town;
     }
@@ -383,6 +386,24 @@ public class Candidat {
         this.awards.remove(award);
         return this;
     }
+
+    public Set<Address> getAddresses() {
+        return this.addresses;
+    }
+
+    public void setAddresss(Set<Address> works) {
+        this.addresses = works;
+    }
+    public Candidat addAddress(Address work) {
+        this.addresses.add(work);
+        return this;
+    }
+
+    public Candidat removeAddress(Address work) {
+        this.addresses.remove(work);
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

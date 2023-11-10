@@ -156,6 +156,20 @@ public class RecruteurResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,ServletUriComponentsBuilder.fromCurrentRequest().toUriString());
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
+    @GetMapping("/recruteurs/search/live")
+    public ResponseEntity<List<Recruteur>> searchRecruteurs(Pageable pageable,
+    @RequestParam String query,
+    @RequestParam String city,
+    @RequestParam String category,
+    @RequestParam String founded,
+    @RequestParam String compagny_size
+    ) {
+        log.debug("REST request to get a page of Recruteur");
+        Page<Recruteur> page = recruteurService.findSearch(pageable,query,city,
+        category,founded,compagny_size);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,ServletUriComponentsBuilder.fromCurrentRequest().toUriString());
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
     @GetMapping("/recruteurs/tops")
     public ResponseEntity<List<RecruteurDDTO>> getTopRecruteurs() {
         log.debug("REST request to get all Recruteurs");

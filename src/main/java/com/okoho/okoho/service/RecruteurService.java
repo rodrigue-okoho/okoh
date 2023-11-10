@@ -43,6 +43,7 @@ public interface RecruteurService {
      * @return the list of entities.
      */
     Page<Recruteur> findAllWithEagerRelationships(Pageable pageable);
+    Page<Recruteur> findSearch(Pageable pageable,String query,String city,String category,String founded,String compagny_size);
     /**
      * Get the "id" recruteur.
      *

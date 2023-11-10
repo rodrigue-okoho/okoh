@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -168,5 +169,16 @@ public class RecruteurServiceImpl implements RecruteurService {
     public void delete(String id) {
         log.debug("Request to delete Recruteur : {}", id);
         recruteurRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<Recruteur> findSearch(Pageable pageable, String query, String city, String category, String founded,
+            String compagny_size) {
+                var items= recruteurRepository.findAll();
+                if(!query.isBlank()){
+                   // System.out.print(query);
+                 items=   items.stream().filter(e->e.getUserAccount().getFirstName().contains(query)).collect(Collectors.toList());
+                }
+                return new PageImpl<>(items,pageable, items.size());
     }
 }

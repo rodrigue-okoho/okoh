@@ -40,7 +40,7 @@ public class OfferJob implements Serializable {
     @Field("expired_at")
     private LocalDate expiredAt;
     @Field("is_active")
-    private Boolean isActive;
+    private Boolean isActive=false;
     @Field("salary_type")
     private String salaryType;
     @Field("job_apply_type")

@@ -1,5 +1,6 @@
 package com.okoho.okoho.service;
 
+import com.okoho.okoho.domain.Address;
 import com.okoho.okoho.domain.Candidat;
 import com.okoho.okoho.domain.FileUrl;
 import com.okoho.okoho.domain.ItemCandidat;
@@ -28,7 +29,9 @@ public interface CandidatService {
     FileUrl uploadCv(FileUrlDTO fileUrlDTO);
     void removeCv(String idFile);
     ItemCandidat addItemCandidat(ItemCandidatDTO itemCandidatDTO);
+    Address addAddress(Address address);
     void removeItemCandidat(String idItem);
+    void removeAddress(String idItem);
     /**
      * Partially updates a candidat.
      *
@@ -52,6 +55,8 @@ public interface CandidatService {
      * @return the list of entities.
      */
     Page<Candidat> findAllWithEagerRelationships(CandidatCriteria candidatCriteria,Pageable pageable);
+    Page<Candidat> findSearch(Pageable pageable,String keyword,String location,
+    String category,String dateposted,String education,String experience);
 
     /**
      * Get the "id" candidat.
