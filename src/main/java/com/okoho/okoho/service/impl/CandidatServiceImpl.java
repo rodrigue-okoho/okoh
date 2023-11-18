@@ -79,7 +79,8 @@ public class CandidatServiceImpl implements CandidatService {
                     account.setGender(registerRequest.getGender());
                     account.setPhoneNumber(registerRequest.getPhoneNumber());
                     account.setShow_profile(registerRequest.getShow_profile());
-                    candidat.setAge(registerRequest.getAge());
+                    account.setCodePhone(registerRequest.getCodePhone());
+                   // candidat.setAge(registerRequest.getAge());
                     candidat.setDob(LocalDate.parse(registerRequest.getDob()));
                     candidat.setPlaceofborn(registerRequest.getPlaceofborn());
                     candidat.setCurrentSalary(registerRequest.getCurrentSalary());
@@ -281,5 +282,11 @@ public class CandidatServiceImpl implements CandidatService {
                  items=   items.stream().filter(e->e.getUserAccount().getFirstName().contains(keyword)).collect(Collectors.toList());
                 }
                 return new PageImpl<>(items,pageable, items.size());
+    }
+
+    @Override
+    public FileUrl findCv(String idcandidat, int typecv) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findCv'");
     }
 }

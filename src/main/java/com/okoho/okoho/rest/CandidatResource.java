@@ -1,11 +1,13 @@
 package com.okoho.okoho.rest;
 
+import com.lowagie.text.DocumentException;
 import com.okoho.okoho.domain.Address;
 import com.okoho.okoho.domain.Candidat;
 import com.okoho.okoho.domain.FileUrl;
 import com.okoho.okoho.domain.ItemCandidat;
 import com.okoho.okoho.repository.CandidatRepository;
 import com.okoho.okoho.service.CandidatService;
+import com.okoho.okoho.service.CvService;
 import com.okoho.okoho.service.criteria.CandidatCriteria;
 import com.okoho.okoho.service.dto.CandidatDTO;
 import com.okoho.okoho.service.dto.FileUrlDTO;
@@ -15,6 +17,9 @@ import com.okoho.okoho.utils.HeaderUtil;
 import com.okoho.okoho.utils.PaginationUtil;
 import com.okoho.okoho.utils.ResponseUtil;
 import com.okoho.okoho.rest.errors.BadRequestAlertException;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -46,12 +51,15 @@ public class CandidatResource {
     private String applicationName;
 
     private final CandidatService candidatService;
+    private final CvService cvService;
 
     private final CandidatRepository candidatRepository;
 
-    public CandidatResource(CandidatService candidatService, CandidatRepository candidatRepository) {
+    public CandidatResource(CandidatService candidatService, CvService cvService,
+    CandidatRepository candidatRepository) {
         this.candidatService = candidatService;
         this.candidatRepository = candidatRepository;
+        this.cvService=cvService;
     }
 
     /**
@@ -260,11 +268,18 @@ public class CandidatResource {
         candidatService.removeAddress(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id)).build();
     }
-    @GetMapping("/candidats/cvs/{id}")
+    @GetMapping("/candidats/cv_S/{id}")
     public ResponseEntity<List<FileUrl>> getCvForCandidat(@PathVariable String id) {
         log.debug("REST request to get all Candidats");
         List<FileUrl> page = candidatService.findCvs(id);
        
         return ResponseEntity.ok().body(page);
+    }
+    @GetMapping("/candidats/cvs/{id}")
+    public ResponseEntity<FileUrl> getOneCvForCandidat(@PathVariable String id) throws DocumentException, MalformedURLException, IOException {
+        log.debug("REST request to get all Candidats");
+        FileUrl page = cvService.generateCV(id);
+      
+        return ResponseUtil.wrapOrNotFound( Optional.of(page));
     }
 }

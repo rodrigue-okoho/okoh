@@ -47,6 +47,7 @@ public interface CandidatService {
      */
     List<Candidat> findAll();
     List<FileUrl> findCvs(String idcandidat);
+    FileUrl findCv(String idcandidat,int typecv);
 
     /**
      * Get all the candidats with eager load of many-to-many relationships.
