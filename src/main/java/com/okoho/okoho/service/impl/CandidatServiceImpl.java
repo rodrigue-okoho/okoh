@@ -227,30 +227,58 @@ public class CandidatServiceImpl implements CandidatService {
     }
 
     @Override
-    public ItemCandidat addItemCandidat(ItemCandidatDTO itemCandidatDTO) {
-        var candidat = candidatRepository.findById(itemCandidatDTO.getId()).get();
-        var item = new ItemCandidat();
-        item.setBegin(LocalDate.parse(itemCandidatDTO.getBegin()));
-        item.setEnd(LocalDate.parse(itemCandidatDTO.getEnd()));
-        item.setDescription(itemCandidatDTO.getDescription());
-        item.setLibelle(itemCandidatDTO.getLibelle());
-        item.setLocation(itemCandidatDTO.getLocation());
-        item.setCity(itemCandidatDTO.getCity());
-        item.setCountry(itemCandidatDTO.getCountry());
-        item.setLine1(itemCandidatDTO.getLine1());
-        item.setLine2(itemCandidatDTO.getLine2());
-        item.setItemType(itemCandidatDTO.getItemType());
-        if (item.getItemType().equals("education")) {
-            item.setTraning_body(itemCandidatDTO.getTraning_body());
-            candidat.addEducation(itemCandidatRepository.save(item));
-        } else if (item.getItemType().equals("work")) {
-            item.setEmployer_name(itemCandidatDTO.getEmployer_name());
-            candidat.addWork(itemCandidatRepository.save(item));
-        } else if (item.getItemType().equals("award")) {
-            candidat.addAwards(itemCandidatRepository.save(item));
+    public ItemCandidatDTO addItemCandidat(ItemCandidatDTO itemCandidatDTO) {
+        if(itemCandidatDTO == null) {
+            log.error("Unable to save null entity");
         }
-        candidatRepository.save(candidat);
-        return item;
+
+        if(itemCandidatDTO.getId() == null){
+            var candidat = candidatRepository.findById(itemCandidatDTO.getOwner_id()).get();
+            var item = new ItemCandidat();
+            item.setBegin(LocalDate.parse(itemCandidatDTO.getBegin()));
+            item.setEnd(LocalDate.parse(itemCandidatDTO.getEnd()));
+            item.setDescription(itemCandidatDTO.getDescription());
+            item.setLibelle(itemCandidatDTO.getLibelle());
+            item.setLocation(itemCandidatDTO.getLocation());
+            item.setCity(itemCandidatDTO.getCity());
+            item.setCountry(itemCandidatDTO.getCountry());
+            item.setLine1(itemCandidatDTO.getLine1());
+            item.setLine2(itemCandidatDTO.getLine2());
+            item.setItemType(itemCandidatDTO.getItemType());
+            item.setPostcode(itemCandidatDTO.getPostcode());
+            if (item.getItemType().equals("education")) {
+                item.setTraning_body(itemCandidatDTO.getTraning_body());
+                item.setWebsite(itemCandidatDTO.getWebsite());
+                candidat.addEducation(itemCandidatRepository.save(item));
+            } else if (item.getItemType().equals("work")) {
+                item.setEmployer_name(itemCandidatDTO.getEmployer_name());
+                candidat.addWork(itemCandidatRepository.save(item));
+            } else if (item.getItemType().equals("award")) {
+                candidat.addAwards(itemCandidatRepository.save(item));
+            }
+            candidatRepository.save(candidat);
+        }
+        else{
+            var itemResult = itemCandidatRepository.findById(itemCandidatDTO.getId()).get();
+            itemResult.setBegin(LocalDate.parse(itemCandidatDTO.getBegin()));
+            itemResult.setEnd(LocalDate.parse(itemCandidatDTO.getEnd()));
+            itemResult.setDescription(itemCandidatDTO.getDescription());
+            itemResult.setLibelle(itemCandidatDTO.getLibelle());
+            itemResult.setLocation(itemCandidatDTO.getLocation());
+            itemResult.setCity(itemCandidatDTO.getCity());
+            itemResult.setCountry(itemCandidatDTO.getCountry());
+            itemResult.setLine1(itemCandidatDTO.getLine1());
+            itemResult.setLine2(itemCandidatDTO.getLine2());
+            itemResult.setPostcode(itemCandidatDTO.getPostcode());
+            if (itemResult.getItemType().equals("education")) {
+                itemResult.setTraning_body(itemCandidatDTO.getTraning_body());
+                itemResult.setWebsite(itemCandidatDTO.getWebsite());
+            } else if (itemResult.getItemType().equals("work")) {
+                itemResult.setEmployer_name(itemCandidatDTO.getEmployer_name());
+            }
+            itemCandidatRepository.save(itemResult);
+        }
+        return itemCandidatDTO;
     }
 
     @Override

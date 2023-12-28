@@ -1,5 +1,7 @@
 package com.okoho.okoho.service.dto;
 
+import org.springframework.data.mongodb.core.mapping.Field;
+
 public class ItemCandidatDTO {
  private String id;
 
@@ -21,6 +23,10 @@ public class ItemCandidatDTO {
     private String traning_body;
     private String line2;
     private String line1;
+    private String owner_id;
+    private String postcode;
+    private String website;
+
     public String getId() {
         return this.id;
     }
@@ -123,6 +129,29 @@ public class ItemCandidatDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getOwner_id() {
+        return owner_id;
+    }
+    public void setOwner_id(String owner_id) {
+        this.owner_id = owner_id;
+    }
+
+    public String getPostcode() {
+        return this.postcode;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
+
+    public String getWebsite() {
+        return this.website;
+    }
+
+    public void setWebsite(String postcode) {
+        this.website = postcode;
     }
 
 }

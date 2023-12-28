@@ -115,9 +115,9 @@ public class CandidatResource {
     }
   
     @PostMapping("/candidats/additem")
-    public ResponseEntity<ItemCandidat> addItem(@RequestBody ItemCandidatDTO itemCandidatDTO) throws URISyntaxException {
+    public ResponseEntity<ItemCandidatDTO> addItem(@RequestBody ItemCandidatDTO itemCandidatDTO) throws URISyntaxException {
 
-        ItemCandidat result = candidatService.addItemCandidat(itemCandidatDTO);
+        ItemCandidatDTO result = candidatService.addItemCandidat(itemCandidatDTO);
         return ResponseEntity
                 .created(new URI("/v1/candidats/"))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, null))

@@ -25,7 +25,7 @@ public interface CandidatService {
     Candidat save(CandidatDTO registerRequest);
     FileUrl uploadCv(FileUrlDTO fileUrlDTO);
     void removeCv(String idFile);
-    ItemCandidat addItemCandidat(ItemCandidatDTO itemCandidatDTO);
+    ItemCandidatDTO addItemCandidat(ItemCandidatDTO itemCandidatDTO);
     AdressDTO addAddress(AdressDTO address);
     void removeItemCandidat(String idItem);
     void removeAddress(String idItem);

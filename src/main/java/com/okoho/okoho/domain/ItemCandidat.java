@@ -38,6 +38,11 @@ public class ItemCandidat  implements Serializable{
     @Field("description")
     private String description;
 
+    @Field("postcode")
+    private String postcode;
+    @Field("website")
+    private String website;
+
     public String getId() {
         return this.id;
     }
@@ -140,6 +145,22 @@ public class ItemCandidat  implements Serializable{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getPostcode() {
+        return this.postcode;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
+
+    public String getWebsite() {
+        return this.website;
+    }
+
+    public void setWebsite(String postcode) {
+        this.website = postcode;
     }
 
 }
