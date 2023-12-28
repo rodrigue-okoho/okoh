@@ -260,7 +260,7 @@ public class CandidatServiceImpl implements CandidatService {
 
     @Override
     public AdressDTO addAddress(AdressDTO adressDTO) {
-        if (adressDTO.getId().equals(null)){
+        if (adressDTO.getId() == null){
             var candidat = candidatRepository.findById(adressDTO.getOwner_id()).get();
             var address=new Address();
             address.setCity(adressDTO.getCity());
