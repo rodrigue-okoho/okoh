@@ -28,6 +28,8 @@ public class Candidat {
     private String town;
     @Field("placeofborn")
     private String placeofborn;
+    @Field("countryofborn")
+    private String countryofborn;
     @Field("current_salary")
     private float currentSalary;
     @Field("expected_salary")
@@ -81,6 +83,15 @@ public class Candidat {
     @DBRef
     @Field("addresses")
     private Set<Address> addresses = new HashSet<>();
+
+    public String getCountryofborn() {
+        return countryofborn;
+    }
+
+    public void setCountryofborn(String countryofborn) {
+        this.countryofborn = countryofborn;
+    }
+
     public String getTown() {
         return town;
     }

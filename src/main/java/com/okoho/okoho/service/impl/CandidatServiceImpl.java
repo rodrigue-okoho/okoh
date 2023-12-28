@@ -11,6 +11,7 @@ import com.okoho.okoho.rest.errors.TypeAccountExeption;
 import com.okoho.okoho.service.CandidatService;
 import com.okoho.okoho.service.FileService;
 import com.okoho.okoho.service.criteria.CandidatCriteria;
+import com.okoho.okoho.service.dto.AdressDTO;
 import com.okoho.okoho.service.dto.CandidatDTO;
 import com.okoho.okoho.service.dto.FileUrlDTO;
 import com.okoho.okoho.service.dto.ItemCandidatDTO;
@@ -46,18 +47,19 @@ public class CandidatServiceImpl implements CandidatService {
     private final CategoryJobRepository categoryJobRepository;
 
     private final AddressRepository addressRepository;
+
     public CandidatServiceImpl(FileService fileService,
                                UserAccountRepository userAccountRepository, ItemCandidatRepository itemCandidatRepository,
                                CandidatRepository candidatRepository, AddressRepository addressRepository,
-                               FileUrlRepository fileUrlRepository, 
+                               FileUrlRepository fileUrlRepository,
                                CategoryJobRepository categoryJobRepository) {
         this.fileService = fileService;
         this.candidatRepository = candidatRepository;
         this.userAccountRepository = userAccountRepository;
         this.fileUrlRepository = fileUrlRepository;
-        this.itemCandidatRepository=itemCandidatRepository;
+        this.itemCandidatRepository = itemCandidatRepository;
         this.categoryJobRepository = categoryJobRepository;
-        this.addressRepository=addressRepository;
+        this.addressRepository = addressRepository;
     }
 
     @Override
@@ -80,9 +82,10 @@ public class CandidatServiceImpl implements CandidatService {
                     account.setPhoneNumber(registerRequest.getPhoneNumber());
                     account.setShow_profile(registerRequest.getShow_profile());
                     account.setCodePhone(registerRequest.getCodePhone());
-                   // candidat.setAge(registerRequest.getAge());
+                    // candidat.setAge(registerRequest.getAge());
                     candidat.setDob(LocalDate.parse(registerRequest.getDob()));
                     candidat.setPlaceofborn(registerRequest.getPlaceofborn());
+                    candidat.setCountryofborn(registerRequest.getCountryofborn());
                     candidat.setCurrentSalary(registerRequest.getCurrentSalary());
                     candidat.setDescription(registerRequest.getDescription());
                     candidat.setEducationLevel(registerRequest.getEducationLevel());
@@ -91,7 +94,7 @@ public class CandidatServiceImpl implements CandidatService {
                     candidat.setJobTitle(registerRequest.getJobTitle());
                     candidat.setQualification(registerRequest.getQualification());
                     candidat.setSalaryType(registerRequest.getSalaryType());
-                   // registerRequest.getCategoryJobs().stream().forEach(e->candidat.addCategoryJobs(categoryJobRepository.findById(e).get()));
+                    // registerRequest.getCategoryJobs().stream().forEach(e->candidat.addCategoryJobs(categoryJobRepository.findById(e).get()));
 
                     break;
                 case "sociale":
@@ -133,9 +136,6 @@ public class CandidatServiceImpl implements CandidatService {
                     break;
             }
             userAccountRepository.save(account);
-            // var candidat=candidatRepository.findFirstByUserAccount(account).get();
-            // candidat.setDob(registerRequest.getDob());
-            // candidat.setUserAccount(account);
             return candidatRepository.save(candidat);
         } else {
             throw new BadRequestAlertException("Invalid user", "Candidat", "idnull");
@@ -145,13 +145,13 @@ public class CandidatServiceImpl implements CandidatService {
 
     @Override
     public FileUrl uploadCv(FileUrlDTO fileUrlDTO) {
-        var candidat=candidatRepository.findById(fileUrlDTO.getId()).get();
-    
+        var candidat = candidatRepository.findById(fileUrlDTO.getId()).get();
+
         var photo = fileService.convertDocument(fileUrlDTO.getUrl());
-        var fileurl=new FileUrl();
+        var fileurl = new FileUrl();
         fileurl.setName(fileUrlDTO.getName());
-        fileurl.setDomain(domain+"images/");
-        fileurl.setUrl(domain+"images/"+photo);
+        fileurl.setDomain(domain + "images/");
+        fileurl.setUrl(domain + "images/" + photo);
         candidat.addCvs(fileUrlRepository.save(fileurl));
         candidatRepository.save(candidat);
         return null;
@@ -159,7 +159,7 @@ public class CandidatServiceImpl implements CandidatService {
 
     @Override
     public void removeCv(String idFile) {
-        var file=fileUrlRepository.findById(idFile).get();
+        var file = fileUrlRepository.findById(idFile).get();
         fileUrlRepository.deleteById(idFile);
     }
 
@@ -195,7 +195,7 @@ public class CandidatServiceImpl implements CandidatService {
          * .stream()
          * .filter(e-> Objects.equals(e.getExperienceTime(),
          * candidatCriteria.getExperience()))
-         * 
+         *
          * .collect(Collectors.toCollection(LinkedList::new));
          * return new PageImpl<>(list,pageable,list.size());
          */
@@ -222,14 +222,14 @@ public class CandidatServiceImpl implements CandidatService {
 
     @Override
     public List<FileUrl> findCvs(String idcandidat) {
-       
-        return  candidatRepository.findById(idcandidat).get().getCvs().stream().collect(Collectors.toList());
+
+        return candidatRepository.findById(idcandidat).get().getCvs().stream().collect(Collectors.toList());
     }
 
     @Override
     public ItemCandidat addItemCandidat(ItemCandidatDTO itemCandidatDTO) {
-        var candidat=candidatRepository.findById(itemCandidatDTO.getId()).get();
-        var item=new ItemCandidat();
+        var candidat = candidatRepository.findById(itemCandidatDTO.getId()).get();
+        var item = new ItemCandidat();
         item.setBegin(LocalDate.parse(itemCandidatDTO.getBegin()));
         item.setEnd(LocalDate.parse(itemCandidatDTO.getEnd()));
         item.setDescription(itemCandidatDTO.getDescription());
@@ -240,13 +240,13 @@ public class CandidatServiceImpl implements CandidatService {
         item.setLine1(itemCandidatDTO.getLine1());
         item.setLine2(itemCandidatDTO.getLine2());
         item.setItemType(itemCandidatDTO.getItemType());
-        if(item.getItemType().equals("education")){
+        if (item.getItemType().equals("education")) {
             item.setTraning_body(itemCandidatDTO.getTraning_body());
             candidat.addEducation(itemCandidatRepository.save(item));
-        }else if(item.getItemType().equals("work")){
+        } else if (item.getItemType().equals("work")) {
             item.setEmployer_name(itemCandidatDTO.getEmployer_name());
             candidat.addWork(itemCandidatRepository.save(item));
-        }else if(item.getItemType().equals("award")){
+        } else if (item.getItemType().equals("award")) {
             candidat.addAwards(itemCandidatRepository.save(item));
         }
         candidatRepository.save(candidat);
@@ -255,17 +255,37 @@ public class CandidatServiceImpl implements CandidatService {
 
     @Override
     public void removeItemCandidat(String idItem) {
-       itemCandidatRepository.deleteById(idItem);
+        itemCandidatRepository.deleteById(idItem);
     }
 
     @Override
-    public Address addAddress(Address address) {
-        var candidat=candidatRepository.findById(address.getId()).get();
-        address.setId(null);
-        addressRepository.save(address);
-        candidat.addAddress(address);
-        candidatRepository.save(candidat);
-        return address;
+    public AdressDTO addAddress(AdressDTO adressDTO) {
+        if (adressDTO.getId().equals(null)){
+            var candidat = candidatRepository.findById(adressDTO.getOwner_id()).get();
+            var address=new Address();
+            address.setCity(adressDTO.getCity());
+            address.setCountry(adressDTO.getCountry());
+            address.setPostcode(adressDTO.getPostcode());
+            address.setType(adressDTO.getType());
+            address.setLine1(adressDTO.getLine1());
+            address.setLine2(adressDTO.getLine2());
+            addressRepository.save(address);
+            candidat.addAddress(address);
+            candidatRepository.save(candidat);
+        }else {
+            var address=addressRepository.findById(adressDTO.getId()).get();
+            address.setCity(adressDTO.getCity());
+            address.setCountry(adressDTO.getCountry());
+            address.setPostcode(adressDTO.getPostcode());
+            address.setType(adressDTO.getType());
+            address.setLine1(adressDTO.getLine1());
+            address.setLine2(adressDTO.getLine2());
+            addressRepository.save(address);
+        }
+
+
+
+        return adressDTO;
     }
 
     @Override
@@ -275,13 +295,28 @@ public class CandidatServiceImpl implements CandidatService {
 
     @Override
     public Page<Candidat> findSearch(Pageable pageable, String keyword, String location, String category,
-            String dateposted, String education, String experience) {
-                var items= candidatRepository.findAll();
-                if(!keyword.isBlank()){
-                    System.out.print(keyword);
-                 items=   items.stream().filter(e->e.getUserAccount().getFirstName().contains(keyword)).collect(Collectors.toList());
-                }
-                return new PageImpl<>(items,pageable, items.size());
+                                     String dateposted, String education, String experience) {
+        var items = candidatRepository.findAll();
+        if (!keyword.isBlank()) {
+            System.out.print(keyword);
+            items = items.stream()
+                    .filter(e -> e.getUserAccount().getFirstName().contains(keyword))
+                    .collect(Collectors.toList());
+        }
+        if (!location.isBlank()) {
+            System.out.print(location);
+            items = items.stream()
+                    .filter(e -> e.getCountry().contains(location))
+                    .filter(e -> e.getTown().contains(location))
+                    .collect(Collectors.toList());
+        }
+        if (!category.isBlank()) {
+            System.out.print(category);
+            items = items.stream()
+                    .filter(e -> e.getCategoryJobs().stream().filter(categoryJob -> categoryJob.getTitle().contains(category)).equals(true))
+                    .collect(Collectors.toList());
+        }
+        return new PageImpl<>(items, pageable, items.size());
     }
 
     @Override

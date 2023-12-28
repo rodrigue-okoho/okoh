@@ -57,7 +57,16 @@ public class CandidatDTO implements Serializable {
     private String address;
     //private Set<String> categoryJobs= new HashSet<>();
     private String placeofborn;
+    private String countryofborn;
     private String dob;
+
+    public String getCountryofborn() {
+        return countryofborn;
+    }
+
+    public void setCountryofborn(String countryofborn) {
+        this.countryofborn = countryofborn;
+    }
 
     public String getPlaceofborn() {
         return placeofborn;

@@ -9,10 +9,7 @@ import com.okoho.okoho.repository.CandidatRepository;
 import com.okoho.okoho.service.CandidatService;
 import com.okoho.okoho.service.CvService;
 import com.okoho.okoho.service.criteria.CandidatCriteria;
-import com.okoho.okoho.service.dto.CandidatDTO;
-import com.okoho.okoho.service.dto.FileUrlDTO;
-import com.okoho.okoho.service.dto.ItemCandidatDTO;
-import com.okoho.okoho.service.dto.RegisterRequest;
+import com.okoho.okoho.service.dto.*;
 import com.okoho.okoho.utils.HeaderUtil;
 import com.okoho.okoho.utils.PaginationUtil;
 import com.okoho.okoho.utils.ResponseUtil;
@@ -108,9 +105,9 @@ public class CandidatResource {
                 .body(result);
     }
     @PostMapping("/candidats/address")
-    public ResponseEntity<Address> addAddress(@RequestBody Address address) throws URISyntaxException {
+    public ResponseEntity<AdressDTO> addAddress(@RequestBody AdressDTO address) throws URISyntaxException {
 
-        Address result = candidatService.addAddress(address);
+        AdressDTO result = candidatService.addAddress(address);
         return ResponseEntity
                 .created(new URI("/v1/candidats/address"))
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, null))

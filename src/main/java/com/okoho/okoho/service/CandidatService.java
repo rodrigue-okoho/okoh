@@ -5,10 +5,7 @@ import com.okoho.okoho.domain.Candidat;
 import com.okoho.okoho.domain.FileUrl;
 import com.okoho.okoho.domain.ItemCandidat;
 import com.okoho.okoho.service.criteria.CandidatCriteria;
-import com.okoho.okoho.service.dto.CandidatDTO;
-import com.okoho.okoho.service.dto.FileUrlDTO;
-import com.okoho.okoho.service.dto.ItemCandidatDTO;
-import com.okoho.okoho.service.dto.RegisterRequest;
+import com.okoho.okoho.service.dto.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,14 +19,14 @@ public interface CandidatService {
     /**
      * Save a candidat.
      *
-     * @param candidat the entity to save.
+     * @param CandidatDTO the entity to save.
      * @return the persisted entity.
      */
     Candidat save(CandidatDTO registerRequest);
     FileUrl uploadCv(FileUrlDTO fileUrlDTO);
     void removeCv(String idFile);
     ItemCandidat addItemCandidat(ItemCandidatDTO itemCandidatDTO);
-    Address addAddress(Address address);
+    AdressDTO addAddress(AdressDTO address);
     void removeItemCandidat(String idItem);
     void removeAddress(String idItem);
     /**
