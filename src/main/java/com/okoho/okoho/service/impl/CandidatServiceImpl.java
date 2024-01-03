@@ -344,6 +344,11 @@ public class CandidatServiceImpl implements CandidatService {
                     .filter(e -> e.getCategoryJobs().stream().filter(categoryJob -> categoryJob.getTitle().contains(category)).equals(true))
                     .collect(Collectors.toList());
         }
+        if (!dateposted.isBlank()) {
+            items = items.stream()
+                    .filter(e -> e.getDob().isBefore(LocalDate.parse(dateposted)))
+                    .collect(Collectors.toList());
+        }
         return new PageImpl<>(items, pageable, items.size());
     }
 
