@@ -83,6 +83,9 @@ public class Candidat {
     @DBRef
     @Field("addresses")
     private Set<Address> addresses = new HashSet<>();
+    @DBRef
+    @Field("languages")
+    private Set<Languages> languages = new HashSet<>(0);
 
     public String getCountryofborn() {
         return countryofborn;
@@ -410,10 +413,30 @@ public class Candidat {
         return this;
     }
 
+    public Candidat addLanguage(Languages language) {
+        this.languages.add(language);
+        return  this;
+    }
+
+    public Candidat removeLanguage(Languages language) {
+        this.languages.remove(language);
+        return  this;
+    }
+
+    public Set<Languages> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(Set<Languages> languages) {
+        this.languages = languages;
+    }
+
     public Candidat removeAddress(Address work) {
         this.addresses.remove(work);
         return this;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

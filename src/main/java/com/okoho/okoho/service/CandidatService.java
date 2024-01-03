@@ -29,6 +29,9 @@ public interface CandidatService {
     AdressDTO addAddress(AdressDTO address);
     void removeItemCandidat(String idItem);
     void removeAddress(String idItem);
+    void removeLanguage(String langId);
+
+    LanguageDto saveLanguage(LanguageDto languageDto);
     /**
      * Partially updates a candidat.
      *

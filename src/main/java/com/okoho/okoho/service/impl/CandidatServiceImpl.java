@@ -1,20 +1,14 @@
 package com.okoho.okoho.service.impl;
 
-import com.okoho.okoho.domain.Address;
-import com.okoho.okoho.domain.Candidat;
-import com.okoho.okoho.domain.FileUrl;
-import com.okoho.okoho.domain.ItemCandidat;
-import com.okoho.okoho.domain.UserAccount;
+import com.okoho.okoho.domain.*;
 import com.okoho.okoho.repository.*;
 import com.okoho.okoho.rest.errors.BadRequestAlertException;
 import com.okoho.okoho.rest.errors.TypeAccountExeption;
 import com.okoho.okoho.service.CandidatService;
 import com.okoho.okoho.service.FileService;
 import com.okoho.okoho.service.criteria.CandidatCriteria;
-import com.okoho.okoho.service.dto.AdressDTO;
-import com.okoho.okoho.service.dto.CandidatDTO;
-import com.okoho.okoho.service.dto.FileUrlDTO;
-import com.okoho.okoho.service.dto.ItemCandidatDTO;
+import com.okoho.okoho.service.dto.*;
+import com.okoho.okoho.service.mapper.LanguageMapper;
 import com.okoho.okoho.utils.Constant;
 
 import java.time.LocalDate;
@@ -29,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * Service Implementation for managing {@link Candidat}.
@@ -45,14 +40,15 @@ public class CandidatServiceImpl implements CandidatService {
     private final FileUrlRepository fileUrlRepository;
     private final ItemCandidatRepository itemCandidatRepository;
     private final CategoryJobRepository categoryJobRepository;
-
     private final AddressRepository addressRepository;
+    private LanguageMapper languageMapper;
+    private LanguageRepository languageRepository;
 
     public CandidatServiceImpl(FileService fileService,
                                UserAccountRepository userAccountRepository, ItemCandidatRepository itemCandidatRepository,
                                CandidatRepository candidatRepository, AddressRepository addressRepository,
                                FileUrlRepository fileUrlRepository,
-                               CategoryJobRepository categoryJobRepository) {
+                               CategoryJobRepository categoryJobRepository, LanguageMapper languageMapper, LanguageRepository languageRepository) {
         this.fileService = fileService;
         this.candidatRepository = candidatRepository;
         this.userAccountRepository = userAccountRepository;
@@ -60,6 +56,8 @@ public class CandidatServiceImpl implements CandidatService {
         this.itemCandidatRepository = itemCandidatRepository;
         this.categoryJobRepository = categoryJobRepository;
         this.addressRepository = addressRepository;
+        this.languageMapper = languageMapper;
+        this.languageRepository = languageRepository;
     }
 
     @Override
@@ -319,6 +317,40 @@ public class CandidatServiceImpl implements CandidatService {
     @Override
     public void removeAddress(String idItem) {
         addressRepository.deleteById(idItem);
+    }
+    @Override
+    public void removeLanguage(String langId) {
+        languageRepository.deleteById(langId);
+    }
+
+    @Override
+    public LanguageDto saveLanguage(LanguageDto languageDto) {
+        log.debug("Try to save language");
+
+        if(languageDto == null) {
+            log.error("Unable to save null value");
+        }
+        if(StringUtils.hasLength(languageDto.getOwner_id()) && languageDto.getId() == null) {
+            Optional<Candidat> candidat = candidatRepository.findById(languageDto.getOwner_id());
+            if(!candidat.isPresent()) {
+                log.error("Unable to save this language: language[{}]", languageDto);
+                throw new RuntimeException("Unable to save this lang because candidat not found");
+            }
+            Languages lang = languageRepository.save(languageMapper.dtoToEntity(languageDto));
+            languageDto.setId(lang.getId());
+            candidat.get().addLanguage(lang);
+            candidatRepository.save(candidat.get());
+        }
+        else {
+            Optional<Languages> existing = languageRepository.findById(languageDto.getId());
+            if(!existing.isPresent()) {
+                log.error("Unable to save this language: language[{}]", languageDto);
+                throw new RuntimeException("Unable to save this lang because candidat not found");
+            }
+            languageRepository.save(Languages.build(existing.get(), languageDto));
+        }
+        log.debug("Successfully saved language: {}", languageDto);
+        return languageDto;
     }
 
     @Override

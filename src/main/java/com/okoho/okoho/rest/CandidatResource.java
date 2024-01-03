@@ -113,6 +113,15 @@ public class CandidatResource {
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, null))
                 .body(result);
     }
+    @PostMapping("/candidats/languages")
+    public ResponseEntity<LanguageDto> addLanguage(@RequestBody LanguageDto language) throws URISyntaxException {
+
+        LanguageDto result = candidatService.saveLanguage(language);
+        return ResponseEntity
+                .created(new URI("/v1/candidats/languages"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, null))
+                .body(result);
+    }
   
     @PostMapping("/candidats/additem")
     public ResponseEntity<ItemCandidatDTO> addItem(@RequestBody ItemCandidatDTO itemCandidatDTO) throws URISyntaxException {
@@ -263,6 +272,11 @@ public class CandidatResource {
     @DeleteMapping("/candidats/removeaddress/{id}")
     public ResponseEntity<Void> deleteAddress(@PathVariable String id) {
         candidatService.removeAddress(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id)).build();
+    }
+    @DeleteMapping("/candidats/remove-language/{id}")
+    public ResponseEntity<Void> deleteLanguage(@PathVariable String id) {
+        candidatService.removeLanguage(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id)).build();
     }
     @GetMapping("/candidats/cv_S/{id}")
