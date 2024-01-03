@@ -175,10 +175,41 @@ public class RecruteurServiceImpl implements RecruteurService {
     public Page<Recruteur> findSearch(Pageable pageable, String query, String city, String category, String founded,
             String compagny_size) {
                 var items= recruteurRepository.findAll();
-                if(!query.isBlank()){
-                   // System.out.print(query);
-                 items=   items.stream().filter(e->e.getUserAccount().getFirstName().contains(query)).collect(Collectors.toList());
+                if(!query.isEmpty()){
+                 items= items.stream()
+                         .filter(recruteur -> recruteur.getUserAccount().getFirstName() != null)
+                         .filter(e->e.getUserAccount().getFirstName().toLowerCase().contains(query.toLowerCase()))
+                         .collect(Collectors.toList());
                 }
+        if(!city.isEmpty()){
+            items= items.stream()
+                    .filter(recruteur -> recruteur.getUserAccount().getFirstName() != null)
+                    .filter(recruteur -> recruteur.getCountry() != null)
+                    .filter(e->e.getCountry().toLowerCase().contains(city.toLowerCase())||
+                           e.getTown().toLowerCase().contains(city.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        if(!founded.isEmpty()){
+            items= items.stream()
+                    .filter(recruteur -> recruteur.getUserAccount().getFirstName() != null)
+                    .filter(recruteur -> recruteur.getFoundedDate() != null)
+                    .filter(e->e.getFoundedDate().isEqual(LocalDate.parse(founded)))
+                    .collect(Collectors.toList());
+        }
+        if(!compagny_size.isEmpty()){
+            items= items.stream()
+                    .filter(recruteur -> recruteur.getUserAccount().getFirstName() != null)
+                    .filter(recruteur -> recruteur.getCompanySize() != null)
+                    .filter(e->e.getCompanySize().toLowerCase().contains(compagny_size.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+        if(!category.isEmpty()){
+            items= items.stream()
+                    .filter(recruteur -> recruteur.getUserAccount().getFirstName() != null)
+                    .filter(recruteur -> recruteur.getCategoryJobs() != null)
+                    .filter(e->e.getCategoryJobs().contains(category.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
                 return new PageImpl<>(items,pageable, items.size());
     }
 }
