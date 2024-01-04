@@ -115,15 +115,13 @@ public class CandidatServiceImpl implements CandidatService {
                         if (f != null) {
                             fileUrlRepository.delete(f);
                         }
-                        var photo = fileService.convertImage(registerRequest.getImageUrl());
+                       // var photo = fileService.convertImage(registerRequest.getImageUrl());
                         var fileurl = new FileUrl();
                         fileurl.setName(candidat.getUserAccount().getFirstName());
-                        fileurl.setUrl(photo);
+                        fileurl.setUrl(registerRequest.getImageUrl());
                         fileurl.setDomain(domain + "images/");
                         account.setFileUrl(fileUrlRepository.save(fileurl));
-                        account.setImageUrl(domain + "images/" + photo);
-                        //user.setImageUrl(photo);
-                        // user.setImage(fileService.convertImageByte(userRequest.getImageFile()));
+                        account.setImageUrl(registerRequest.getImageUrl());
                     }
 
                     if (registerRequest.getLangKey() == null) {
