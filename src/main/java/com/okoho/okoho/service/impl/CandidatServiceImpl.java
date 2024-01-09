@@ -8,6 +8,7 @@ import com.okoho.okoho.service.CandidatService;
 import com.okoho.okoho.service.FileService;
 import com.okoho.okoho.service.criteria.CandidatCriteria;
 import com.okoho.okoho.service.dto.*;
+import com.okoho.okoho.service.mapper.BranchMapper;
 import com.okoho.okoho.service.mapper.LanguageMapper;
 import com.okoho.okoho.utils.Constant;
 
@@ -43,12 +44,14 @@ public class CandidatServiceImpl implements CandidatService {
     private final AddressRepository addressRepository;
     private LanguageMapper languageMapper;
     private LanguageRepository languageRepository;
+    private final BranchMapper branchMapper;
+    private final BranchRepository branchRepository;
 
     public CandidatServiceImpl(FileService fileService,
                                UserAccountRepository userAccountRepository, ItemCandidatRepository itemCandidatRepository,
                                CandidatRepository candidatRepository, AddressRepository addressRepository,
                                FileUrlRepository fileUrlRepository,
-                               CategoryJobRepository categoryJobRepository, LanguageMapper languageMapper, LanguageRepository languageRepository) {
+                               CategoryJobRepository categoryJobRepository, LanguageMapper languageMapper, LanguageRepository languageRepository, BranchMapper branchMapper, BranchRepository branchRepository) {
         this.fileService = fileService;
         this.candidatRepository = candidatRepository;
         this.userAccountRepository = userAccountRepository;
@@ -58,6 +61,8 @@ public class CandidatServiceImpl implements CandidatService {
         this.addressRepository = addressRepository;
         this.languageMapper = languageMapper;
         this.languageRepository = languageRepository;
+        this.branchMapper = branchMapper;
+        this.branchRepository = branchRepository;
     }
 
     @Override
@@ -123,7 +128,6 @@ public class CandidatServiceImpl implements CandidatService {
                         account.setFileUrl(fileUrlRepository.save(fileurl));
                         account.setImageUrl(registerRequest.getImageUrl());
                     }
-
                     if (registerRequest.getLangKey() == null) {
                         account.setLangKey("de"); // default language
                     } else {
@@ -349,6 +353,41 @@ public class CandidatServiceImpl implements CandidatService {
         }
         log.debug("Successfully saved language: {}", languageDto);
         return languageDto;
+    }
+
+    @Override
+    public BranchDto saveBranch(BranchDto branchDto) {
+        log.debug("Try to save language");
+
+        if(branchDto == null) {
+            log.error("Unable to save null value");
+        }
+        if(StringUtils.hasLength(branchDto.getOwner_id()) && branchDto.getId() == null) {
+            Optional<Candidat> candidat = candidatRepository.findById(branchDto.getOwner_id());
+            if(!candidat.isPresent()) {
+                log.error("Unable to save this language: language[{}]", branchDto);
+                throw new RuntimeException("Unable to save this lang because candidat not found");
+            }
+            Branch branch = branchRepository.save(branchMapper.dtoToEntity(branchDto));
+            branchDto.setId(branch.getId());
+            candidat.get().addBranch(branch);
+            candidatRepository.save(candidat.get());
+        }
+        else {
+            Optional<Branch> existing = branchRepository.findById(branchDto.getId());
+            if(existing.isEmpty()) {
+                log.error("Unable to save this language: language[{}]", branchDto);
+                throw new RuntimeException("Unable to save this lang because candidat not found");
+            }
+            branchRepository.save(Branch.build(existing.get(), branchDto));
+        }
+        log.debug("Successfully saved language: {}", branchDto);
+        return branchDto;
+    }
+
+    @Override
+    public void removeBranch(String langId) {
+        branchRepository.deleteById(langId);
     }
 
     @Override

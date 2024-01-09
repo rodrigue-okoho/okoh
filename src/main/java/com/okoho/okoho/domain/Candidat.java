@@ -86,7 +86,9 @@ public class Candidat {
     @DBRef
     @Field("languages")
     private Set<Languages> languages = new HashSet<>(0);
-
+    @DBRef
+    @Field("branches")
+    private Set<Branch> branches = new HashSet<>(0);
     public String getCountryofborn() {
         return countryofborn;
     }
@@ -431,6 +433,25 @@ public class Candidat {
         this.languages = languages;
     }
 
+    public void setAddresses(Set<Address> addresses) {
+        this.addresses = addresses;
+    }
+
+    public Set<Branch> getBranches() {
+        return branches;
+    }
+
+    public void setBranches(Set<Branch> branches) {
+        this.branches = branches;
+    }
+    public Candidat addBranch(Branch branch) {
+        this.branches.add(branch);
+        return this;
+    }
+    public Candidat removeBranch(Branch branch) {
+        this.branches.remove(branch);
+        return  this;
+    }
     public Candidat removeAddress(Address work) {
         this.addresses.remove(work);
         return this;

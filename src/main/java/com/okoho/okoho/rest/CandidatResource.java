@@ -122,6 +122,15 @@ public class CandidatResource {
                 .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, null))
                 .body(result);
     }
+    @PostMapping("/candidats/branches")
+    public ResponseEntity<BranchDto> addBranch(@RequestBody BranchDto branchDto) throws URISyntaxException {
+
+        BranchDto result = candidatService.saveBranch(branchDto);
+        return ResponseEntity
+                .created(new URI("/v1/candidats/branches"))
+                .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, null))
+                .body(result);
+    }
   
     @PostMapping("/candidats/additem")
     public ResponseEntity<ItemCandidatDTO> addItem(@RequestBody ItemCandidatDTO itemCandidatDTO) throws URISyntaxException {
@@ -277,6 +286,11 @@ public class CandidatResource {
     @DeleteMapping("/candidats/remove-language/{id}")
     public ResponseEntity<Void> deleteLanguage(@PathVariable String id) {
         candidatService.removeLanguage(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id)).build();
+    }
+    @DeleteMapping("/candidats/remove-branch/{id}")
+    public ResponseEntity<Void> deleteBranch(@PathVariable String id) {
+        candidatService.removeBranch(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id)).build();
     }
     @GetMapping("/candidats/cv_S/{id}")

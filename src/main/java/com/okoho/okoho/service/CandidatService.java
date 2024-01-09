@@ -32,6 +32,8 @@ public interface CandidatService {
     void removeLanguage(String langId);
 
     LanguageDto saveLanguage(LanguageDto languageDto);
+    BranchDto saveBranch(BranchDto branchDto);
+    void removeBranch(String langId);
     /**
      * Partially updates a candidat.
      *
