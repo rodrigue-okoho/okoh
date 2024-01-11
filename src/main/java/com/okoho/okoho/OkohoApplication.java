@@ -1,5 +1,8 @@
 package com.okoho.okoho;
 
+import com.okoho.okoho.domain.ERole;
+import com.okoho.okoho.repository.RoleRepository;
+import com.okoho.okoho.utils.KeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -25,6 +28,8 @@ public class OkohoApplication implements CommandLineRunner{
 	private PersonnelRepository personnelRepository;
 	@Autowired
 	private UserAccountRepository userAccountRepository;
+	@Autowired
+	private RoleRepository roleRepository;
 	public static void main(String[] args) {
 		SpringApplication.run(OkohoApplication.class, args);
 	

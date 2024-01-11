@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * Service Implementation for managing {@link OfferJob}.
@@ -54,9 +55,11 @@ public class OfferJobServiceImpl implements OfferJobService {
          for (String s : offerJobDTO.getCategoryjobs()) {
                offerJob.addCategoryJob(categoryJobRepository.findById(s).get());
         }
-        offerJob.setExpiredAt(LocalDate.parse(offerJobDTO.getExpiredAt()));
-        offerJob.setCreatedAt(LocalDate.now());
-        offerJob.setRecruteur(recruteurRepository.findById(offerJobDTO.getId_recruteur()).get());
+         if(!StringUtils.hasLength(offerJobDTO.getId())) {
+             offerJob.setExpiredAt(LocalDate.parse(offerJobDTO.getExpiredAt()));
+             offerJob.setCreatedAt(LocalDate.now());
+             offerJob.setRecruteur(recruteurRepository.findById(offerJobDTO.getId_recruteur()).get());
+         }
         offerJob = offerJobRepository.save(offerJob);
         return offerJob;
     }
