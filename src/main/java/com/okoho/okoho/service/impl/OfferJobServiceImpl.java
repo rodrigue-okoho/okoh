@@ -110,7 +110,9 @@ public class OfferJobServiceImpl implements OfferJobService {
 
     @Override
     public Page<OfferJob> findByEntreprise(Pageable pageable, String entreprise) {
-        return offerJobRepository.findByRecruteur(pageable,recruteurRepository.findById(entreprise).get());
+        var jobs=offerJobRepository.findByRecruteur(recruteurRepository.findById(entreprise).get());
+        return new PageImpl<>(jobs,pageable, jobs.size());
+       // return offerJobRepository.findByRecruteur(pageable,recruteurRepository.findById(entreprise).get());
     }
     @Override
     public List<OfferJob> findByEntreprise(String entreprise) {

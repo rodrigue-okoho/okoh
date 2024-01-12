@@ -20,6 +20,7 @@ import java.util.Optional;
 public interface OfferJobRepository extends MongoRepository<OfferJob, String> {
     @Query("{}")
     Page<OfferJob>findByRecruteur(Pageable pageable,Recruteur recruteur);
+    List<OfferJob>findByRecruteur(Recruteur recruteur);
 
     @Query("{'id': ?0}")
     Optional<OfferJob> findOneWithEagerRelationships(String id);
