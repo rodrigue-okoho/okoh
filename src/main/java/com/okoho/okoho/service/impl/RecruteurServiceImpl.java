@@ -97,26 +97,26 @@ public class RecruteurServiceImpl implements RecruteurService {
                         if (f != null) {
                             fileUrlRepository.delete(f);
                         }
-                        var photo = fileService.convertImage(registerRequest.getImageUrl());
+                        //var photo = fileService.convertImage(registerRequest.getImageUrl());
                         var fileurl = new FileUrl();
                         fileurl.setName(entreprise.getUserAccount().getFirstName());
-                        fileurl.setUrl(photo);
+                        fileurl.setUrl(registerRequest.getImageUrl());
                         fileurl.setDomain(domain + "images/");
                         account.setFileUrl(fileUrlRepository.save(fileurl));
-                        account.setImageUrl(domain + "images/" + photo);
+                        account.setImageUrl(registerRequest.getImageUrl());
                     }
                     if (!registerRequest.getCoverUrl().isEmpty()) {
                         var f = account.getFileUrl();
                         if (f != null) {
                             fileUrlRepository.delete(f);
                         }
-                        var photo = fileService.convertImage(registerRequest.getImageUrl());
+                       // var photo = fileService.convertImage(registerRequest.getImageUrl());
                         var fileurl = new FileUrl();
                         fileurl.setName(entreprise.getUserAccount().getFirstName());
-                        fileurl.setUrl(photo);
+                        fileurl.setUrl(registerRequest.getImageUrl());
                         fileurl.setDomain(domain + "images/");
                         entreprise.setCover_url(fileUrlRepository.save(fileurl));
-                        entreprise.setCover_image_url(domain + "images/" + photo);
+                        entreprise.setCover_image_url(registerRequest.getImageUrl());
                     }
                     break;
             }
