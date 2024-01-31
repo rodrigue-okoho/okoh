@@ -28,6 +28,7 @@ public class AlertServiceimpl implements AlertService {
     public AlertCandidatDTO save_alert_candidat(AlertCandidatDTO alertCandidatDTO) {
         var user=userAccountRepository.findById(alertCandidatDTO.getOwner_id()).get();
         AlertCandidat alertCandidat=new AlertCandidat();
+        alertCandidat.setTitle(alertCandidatDTO.getTitle());
         alertCandidat.setCategory(alertCandidatDTO.getCategory());
         alertCandidat.setExperience(alertCandidatDTO.getExperience());
         alertCandidat.setFrequency(alertCandidatDTO.getFrequency());
@@ -45,6 +46,7 @@ public class AlertServiceimpl implements AlertService {
     public AlertJobDTO save_alert_job(AlertJobDTO alertJobDTO) {
         var user=userAccountRepository.findById(alertJobDTO.getOwner_id()).get();
         AlertJob alertJob=new AlertJob();
+        alertJob.setTitle(alertJobDTO.getTitle());
         alertJob.setCategory(alertJobDTO.getCategory());
         alertJob.setExperience(alertJobDTO.getExperience());
         alertJob.setFrequency(alertJobDTO.getFrequency());
