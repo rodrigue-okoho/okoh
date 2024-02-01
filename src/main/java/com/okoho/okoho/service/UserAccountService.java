@@ -32,6 +32,7 @@ public interface UserAccountService {
      * @return the list of entities.
      */
     List<UserAccountDTO> findAll();
+    List<UserAccountDTO> findIsMessage(String id);
 
     /**
      * Get the "id" userAccount.

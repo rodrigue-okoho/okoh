@@ -56,6 +56,7 @@ public class RecruteurServiceImpl implements RecruteurService {
 
     @Override
     public Recruteur save(RecruteurDTO registerRequest) {
+        System.out.println(registerRequest.getCoverUrl());
         log.debug("Request to save Recruteur : {}", registerRequest);
         if (registerRequest.getUser_type() == null) {
             throw new TypeAccountExeption(null);
@@ -103,7 +104,7 @@ public class RecruteurServiceImpl implements RecruteurService {
                         account.setFileUrl(fileUrlRepository.save(fileurl));
                         account.setImageUrl(registerRequest.getImageUrl());
                     }
-                    if (!registerRequest.getCoverUrl().isEmpty()) {
+                    if (registerRequest.getCoverUrl()!=null) {
                         var f = account.getFileUrl();
                         if (f != null) {
                             fileUrlRepository.delete(f);

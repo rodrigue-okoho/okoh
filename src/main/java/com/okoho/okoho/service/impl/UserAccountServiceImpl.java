@@ -171,8 +171,24 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public List<UserAccountDTO> findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+       return userAccountRepository.findAll().stream().filter(e->e.getUserType()==Constant.CANDIDATACCOUNT).map(userAccountMapper::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserAccountDTO> findIsMessage(String id) {
+        var account=userAccountRepository.findById(id).get();
+        if (account.getUserType().equals(Constant.CANDIDATACCOUNT)){
+            return userAccountRepository.findAll().stream().filter(e-> Objects.equals(e.getUserType(), Constant.ENTREPRISEACCOUNT))
+                    .map(userAccountMapper::toDto).collect(Collectors.toList());
+        }else {
+            return userAccountRepository.findAll().stream().filter(e-> Objects.equals(e.getUserType(), Constant.CANDIDATACCOUNT))
+                    .map(userAccountMapper::toDto).collect(Collectors.toList());
+        }
+
+    }
+
+    public List<UserAccountDTO> findIsRecruteur() {
+        return userAccountRepository.findAll().stream().filter(e-> Objects.equals(e.getUserType(), Constant.ENTREPRISEACCOUNT)).map(userAccountMapper::toDto).collect(Collectors.toList());
     }
 
     @Override

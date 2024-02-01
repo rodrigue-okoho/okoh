@@ -147,6 +147,11 @@ public class UserAccountResource {
         .map(UserDTO::new)
         .orElseThrow();
 };
+    @GetMapping("/users/messages/{id}")
+    public List<UserAccountDTO> getUserCandidats(@PathVariable String id) {
+        log.debug("REST request to get all UserAccounts");
+        return userAccountService.findIsMessage(id);
+    };
 
     /**
      * {@code GET  /user-accounts/:id} : get the "id" userAccount.
