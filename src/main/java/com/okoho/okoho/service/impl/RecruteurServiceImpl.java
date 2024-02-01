@@ -69,7 +69,6 @@ public class RecruteurServiceImpl implements RecruteurService {
                     account.setLastName(registerRequest.getLastName());
                     account.setPhoneNumber(registerRequest.getPhoneNumber());
                     //account.setShow_profile(registerRequest.getShow_profile());
-
                     entreprise.setDescription(registerRequest.getDescription());
                     entreprise.setCompanySize(registerRequest.getCompanySize());
                     entreprise.setFoundedDate(LocalDate.parse(registerRequest.getFoundedDate()));
