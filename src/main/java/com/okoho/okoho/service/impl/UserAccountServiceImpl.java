@@ -193,8 +193,9 @@ public class UserAccountServiceImpl implements UserAccountService {
 
     @Override
     public Optional<UserAccountDTO> findOne(String id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findOne'");
+    
+       var account = userAccountRepository.findById(id);
+        return userAccountMapper.toDto(account);
     }
 
     @Override
