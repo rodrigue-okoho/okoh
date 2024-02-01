@@ -194,7 +194,7 @@ public class UserAccountServiceImpl implements UserAccountService {
     @Override
     public Optional<UserAccountDTO> findOne(String id) {
     
-       var account = userAccountRepository.findById(id);
+       var account=userAccountRepository.findById(id).get();
         //return userAccountMapper.toDto(account);
         Optional<UserAccountDTO> opt = Optional.ofNullable(userAccountMapper.toDto(account));
        return opt;
