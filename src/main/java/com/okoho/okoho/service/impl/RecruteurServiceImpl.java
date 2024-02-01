@@ -91,7 +91,6 @@ public class RecruteurServiceImpl implements RecruteurService {
                     entreprise.setTown(registerRequest.getTown());
                     break;
                 default:
-
                     if (!registerRequest.getImageUrl().isEmpty()) {
                         var f = account.getFileUrl();
                         if (f != null) {
