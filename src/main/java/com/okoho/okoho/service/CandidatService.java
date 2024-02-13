@@ -58,7 +58,7 @@ public interface CandidatService {
      * @return the list of entities.
      */
     Page<Candidat> findAllWithEagerRelationships(CandidatCriteria candidatCriteria,Pageable pageable);
-    Page<Candidat> findSearch(Pageable pageable,String keyword,String location,
+    Page<Candidat> findSearch(Pageable pageable,String keyword,String location,String type,
     String category,String dateposted,String education,String experience);
 
     /**

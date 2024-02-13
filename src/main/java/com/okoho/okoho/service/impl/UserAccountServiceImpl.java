@@ -8,6 +8,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import com.okoho.okoho.repository.*;
+import com.okoho.okoho.service.ApplicantJobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +22,6 @@ import com.okoho.okoho.domain.Candidat;
 import com.okoho.okoho.domain.ERole;
 import com.okoho.okoho.domain.Recruteur;
 import com.okoho.okoho.domain.UserAccount;
-import com.okoho.okoho.repository.CandidatRepository;
-import com.okoho.okoho.repository.RecruteurRepository;
-import com.okoho.okoho.repository.RoleRepository;
-import com.okoho.okoho.repository.UserAccountRepository;
 import com.okoho.okoho.rest.errors.BadRequestAlertException;
 import com.okoho.okoho.rest.errors.EmailAlreadyUsedException;
 import com.okoho.okoho.rest.errors.TypeAccountExeption;
@@ -49,18 +48,20 @@ public class UserAccountServiceImpl implements UserAccountService {
     private final UserAccountRepository userAccountRepository;
     private final RoleRepository roleRepository;
     private final CandidatRepository candidatService;
+    private final ApplicantJobRepository applicantJobRepository;
     private final RecruteurRepository recruteurService;
     private final UserAccountMapper userAccountMapper;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     public UserAccountServiceImpl(UserAccountRepository userAccountRepository, CandidatRepository candidatService,
-            RecruteurRepository recruteurService, UserAccountMapper userAccountMapper,RoleRepository repository) {
+                                  RecruteurRepository recruteurService, UserAccountMapper userAccountMapper, RoleRepository repository, ApplicantJobRepository applicantJobRepository) {
         this.userAccountRepository = userAccountRepository;
         this.candidatService = candidatService;
         this.recruteurService = recruteurService;
         this.userAccountMapper = userAccountMapper;
         this.roleRepository=repository;
+        this.applicantJobRepository = applicantJobRepository;
     }
 
     @Override
@@ -181,8 +182,10 @@ public class UserAccountServiceImpl implements UserAccountService {
             return userAccountRepository.findAll().stream().filter(e-> Objects.equals(e.getUserType(), Constant.ENTREPRISEACCOUNT))
                     .map(userAccountMapper::toDto).collect(Collectors.toList());
         }else {
-            return userAccountRepository.findAll().stream().filter(e-> Objects.equals(e.getUserType(), Constant.CANDIDATACCOUNT))
-                    .map(userAccountMapper::toDto).collect(Collectors.toList());
+            Recruteur recruteur=recruteurService.findFirstByUserAccount(account).get();
+            List<UserAccount>userAccounts = new ArrayList<>();
+            applicantJobRepository.findByRecruteur(recruteur).forEach(e->userAccounts.add(e.getCandidat().getUserAccount()));
+            return userAccounts.stream().map(userAccountMapper::toDto).collect(Collectors.toList());
         }
 
     }

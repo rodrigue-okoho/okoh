@@ -120,7 +120,7 @@ public class CandidatServiceImpl implements CandidatService {
                         if (f != null) {
                             fileUrlRepository.delete(f);
                         }
-                       // var photo = fileService.convertImage(registerRequest.getImageUrl());
+                        // var photo = fileService.convertImage(registerRequest.getImageUrl());
                         var fileurl = new FileUrl();
                         fileurl.setName(candidat.getUserAccount().getFirstName());
                         fileurl.setUrl(registerRequest.getImageUrl());
@@ -228,11 +228,11 @@ public class CandidatServiceImpl implements CandidatService {
 
     @Override
     public ItemCandidatDTO addItemCandidat(ItemCandidatDTO itemCandidatDTO) {
-        if(itemCandidatDTO == null) {
+        if (itemCandidatDTO == null) {
             log.error("Unable to save null entity");
         }
 
-        if(itemCandidatDTO.getId() == null){
+        if (itemCandidatDTO.getId() == null) {
             var candidat = candidatRepository.findById(itemCandidatDTO.getOwner_id()).get();
             var item = new ItemCandidat();
             item.setBegin(LocalDate.parse(itemCandidatDTO.getBegin()));
@@ -257,8 +257,7 @@ public class CandidatServiceImpl implements CandidatService {
                 candidat.addAwards(itemCandidatRepository.save(item));
             }
             candidatRepository.save(candidat);
-        }
-        else{
+        } else {
             var itemResult = itemCandidatRepository.findById(itemCandidatDTO.getId()).get();
             itemResult.setBegin(LocalDate.parse(itemCandidatDTO.getBegin()));
             itemResult.setEnd(LocalDate.parse(itemCandidatDTO.getEnd()));
@@ -288,9 +287,9 @@ public class CandidatServiceImpl implements CandidatService {
 
     @Override
     public AdressDTO addAddress(AdressDTO adressDTO) {
-        if (adressDTO.getId() == null){
+        if (adressDTO.getId() == null) {
             var candidat = candidatRepository.findById(adressDTO.getOwner_id()).get();
-            var address=new Address();
+            var address = new Address();
             address.setCity(adressDTO.getCity());
             address.setCountry(adressDTO.getCountry());
             address.setPostcode(adressDTO.getPostcode());
@@ -300,8 +299,8 @@ public class CandidatServiceImpl implements CandidatService {
             addressRepository.save(address);
             candidat.addAddress(address);
             candidatRepository.save(candidat);
-        }else {
-            var address=addressRepository.findById(adressDTO.getId()).get();
+        } else {
+            var address = addressRepository.findById(adressDTO.getId()).get();
             address.setCity(adressDTO.getCity());
             address.setCountry(adressDTO.getCountry());
             address.setPostcode(adressDTO.getPostcode());
@@ -312,7 +311,6 @@ public class CandidatServiceImpl implements CandidatService {
         }
 
 
-
         return adressDTO;
     }
 
@@ -320,6 +318,7 @@ public class CandidatServiceImpl implements CandidatService {
     public void removeAddress(String idItem) {
         addressRepository.deleteById(idItem);
     }
+
     @Override
     public void removeLanguage(String langId) {
         languageRepository.deleteById(langId);
@@ -329,12 +328,12 @@ public class CandidatServiceImpl implements CandidatService {
     public LanguageDto saveLanguage(LanguageDto languageDto) {
         log.debug("Try to save language");
 
-        if(languageDto == null) {
+        if (languageDto == null) {
             log.error("Unable to save null value");
         }
-        if(StringUtils.hasLength(languageDto.getOwner_id()) && languageDto.getId() == null) {
+        if (StringUtils.hasLength(languageDto.getOwner_id()) && languageDto.getId() == null) {
             Optional<Candidat> candidat = candidatRepository.findById(languageDto.getOwner_id());
-            if(!candidat.isPresent()) {
+            if (!candidat.isPresent()) {
                 log.error("Unable to save this language: language[{}]", languageDto);
                 throw new RuntimeException("Unable to save this lang because candidat not found");
             }
@@ -342,10 +341,9 @@ public class CandidatServiceImpl implements CandidatService {
             languageDto.setId(lang.getId());
             candidat.get().addLanguage(lang);
             candidatRepository.save(candidat.get());
-        }
-        else {
+        } else {
             Optional<Languages> existing = languageRepository.findById(languageDto.getId());
-            if(!existing.isPresent()) {
+            if (!existing.isPresent()) {
                 log.error("Unable to save this language: language[{}]", languageDto);
                 throw new RuntimeException("Unable to save this lang because candidat not found");
             }
@@ -359,12 +357,12 @@ public class CandidatServiceImpl implements CandidatService {
     public BranchDto saveBranch(BranchDto branchDto) {
         log.debug("Try to save language");
 
-        if(branchDto == null) {
+        if (branchDto == null) {
             log.error("Unable to save null value");
         }
-        if(StringUtils.hasLength(branchDto.getOwner_id()) && branchDto.getId() == null) {
+        if (StringUtils.hasLength(branchDto.getOwner_id()) && branchDto.getId() == null) {
             Optional<Candidat> candidat = candidatRepository.findById(branchDto.getOwner_id());
-            if(!candidat.isPresent()) {
+            if (!candidat.isPresent()) {
                 log.error("Unable to save this language: language[{}]", branchDto);
                 throw new RuntimeException("Unable to save this lang because candidat not found");
             }
@@ -372,10 +370,9 @@ public class CandidatServiceImpl implements CandidatService {
             branchDto.setId(branch.getId());
             candidat.get().addBranch(branch);
             candidatRepository.save(candidat.get());
-        }
-        else {
+        } else {
             Optional<Branch> existing = branchRepository.findById(branchDto.getId());
-            if(existing.isEmpty()) {
+            if (existing.isEmpty()) {
                 log.error("Unable to save this language: language[{}]", branchDto);
                 throw new RuntimeException("Unable to save this lang because candidat not found");
             }
@@ -391,18 +388,33 @@ public class CandidatServiceImpl implements CandidatService {
     }
 
     @Override
-    public Page<Candidat> findSearch(Pageable pageable, String keyword, String location, String category,
+    public Page<Candidat> findSearch(Pageable pageable, String keyword, String location, String type, String category,
                                      String dateposted, String education, String experience) {
         var items = candidatRepository.findAll();
+        if (!type.isBlank()) {
+            System.out.print(type);
+            String type_;
+            if (type.equals("candidate_untrained")) {
+                type_ = "training";
+            } else {
+                type_ = "professional";
+            }
+            items = items.stream()
+                    .filter(e->e.getSalaryType() !=null)
+                    .filter(e -> e.getSalaryType().equals(type_))
+                    .collect(Collectors.toList());
+        }
         if (!keyword.isBlank()) {
             System.out.print(keyword);
             items = items.stream()
-                    .filter(e -> e.getUserAccount().getFirstName().contains(keyword))
+                    .filter(e->e.getUserAccount().getFirstName() !=null)
+                    .filter(e -> e.getUserAccount().getFirstName().toLowerCase().contains(keyword.toLowerCase()))
                     .collect(Collectors.toList());
         }
         if (!location.isBlank()) {
             System.out.print(location);
             items = items.stream()
+                    .filter(e->e.getCountry() !=null)
                     .filter(e -> e.getCountry().contains(location))
                     .filter(e -> e.getTown().contains(location))
                     .collect(Collectors.toList());

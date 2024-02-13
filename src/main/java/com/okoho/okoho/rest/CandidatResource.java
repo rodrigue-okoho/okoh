@@ -84,13 +84,14 @@ public class CandidatResource {
     public ResponseEntity<List<Candidat>> searchCandidats(Pageable pageable,
     @RequestParam String keyword,
     @RequestParam String location,
+    @RequestParam String type,
     @RequestParam String category,
     @RequestParam String dateposted,
     @RequestParam String education,
     @RequestParam String experience
     ) {
         log.debug("REST request to get a page of Candidat");
-        Page<Candidat> page = candidatService.findSearch(pageable,keyword,location,
+        Page<Candidat> page = candidatService.findSearch(pageable,keyword,location,type,
         category,dateposted,education,experience);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page,ServletUriComponentsBuilder.fromCurrentRequest().toUriString());
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -228,8 +229,7 @@ public class CandidatResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
     @GetMapping("/candidats/search")
-    public ResponseEntity<List<Candidat>> getAllCandidatsearch(@RequestParam String byexperience,
-                                                          Pageable pageable) {
+    public ResponseEntity<List<Candidat>> getAllCandidatsearch(@RequestParam String byexperience,Pageable pageable) {
         log.debug("REST request to get all Candidats");
         System.out.println(byexperience);
         CandidatCriteria candidatCriteria=new CandidatCriteria(byexperience);

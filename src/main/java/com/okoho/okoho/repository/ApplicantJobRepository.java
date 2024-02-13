@@ -3,6 +3,7 @@ package com.okoho.okoho.repository;
 import com.okoho.okoho.domain.ApplicantJob;
 import com.okoho.okoho.domain.Candidat;
 import com.okoho.okoho.domain.OfferJob;
+import com.okoho.okoho.domain.Recruteur;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -23,6 +24,8 @@ public interface ApplicantJobRepository extends MongoRepository<ApplicantJob, St
     Page<ApplicantJob> findAllWithEagerRelationships(Pageable pageable);
     @Query("{}")
     Page<ApplicantJob> findByCandidat(Pageable pageable,Candidat candidat);
+    @Query("{}")
+    List<ApplicantJob> findByRecruteur(Recruteur recruteur);
     
     Optional<ApplicantJob> findFirstByCandidatAndOfferJob(Candidat candidat, OfferJob offerJob);
     Optional<ApplicantJob> findFirstByCandidat(Candidat candidat);
