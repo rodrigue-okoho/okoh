@@ -116,7 +116,7 @@ public class MailService {
         String subject = messageSource.getMessage(titleKey, null, locale);
         System.out.println(user.getResetKey());
         System.out.println(user.toString());
-        sendEmail(user.getEmail(), subject, content, false, true);
+        sendEmail(user.getEmail(), subject, content, true, true);
     }
 
     @Async

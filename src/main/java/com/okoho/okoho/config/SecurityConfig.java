@@ -45,8 +45,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
       http
-          .csrf()
-          .disable()
+          .csrf().disable()
           .authorizeHttpRequests()
           .requestMatchers("/auth/**")
             .permitAll()
@@ -63,12 +62,14 @@ public class SecurityConfig {
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
           .and()
+
           .addFilterBefore(authenticationJwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+
          // .logout()
           //.logoutUrl("/api/v1/auth/logout")
           //.logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext())
       ;
-  
+
       return http.build();
     }
 /*     @Bean

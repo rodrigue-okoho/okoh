@@ -14,6 +14,7 @@ import com.okoho.okoho.service.ApplicantJobService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,7 @@ import com.okoho.okoho.service.dto.UserAccountDTO;
 import com.okoho.okoho.service.mapper.UserAccountMapper;
 import com.okoho.okoho.utils.Constant;
 import com.okoho.okoho.utils.KeyUtil;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Service Implementation for managing {@link UserAccount}.
@@ -80,7 +82,7 @@ public class UserAccountServiceImpl implements UserAccountService {
                         existingUser -> {
                             boolean removed = removeNonActivatedUser(existingUser);
                             if (!removed) {
-                                throw new EmailAlreadyUsedException();
+                                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Email is already in use");
                             }
                         });
         UserAccount account = new UserAccount();
@@ -120,7 +122,8 @@ public class UserAccountServiceImpl implements UserAccountService {
                         existingUser -> {
                             boolean removed = removeNonActivatedUser(existingUser);
                             if (!removed) {
-                                throw new EmailAlreadyUsedException();
+                                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email is already in use");
+                              //  throw new IllegalAccessException("demo");
                             }
                         });
         UserAccount account = new UserAccount();
@@ -299,7 +302,7 @@ public class UserAccountServiceImpl implements UserAccountService {
                         user -> {
                             String currentEncryptedPassword = user.getPassword();
                             if (!passwordEncoder.matches(currentClearTextPassword, currentEncryptedPassword)) {
-                                // throw new InvalidPasswordException();
+                                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Invalid password");
                             }
                             String encryptedPassword = passwordEncoder.encode(newPassword);
                             user.setPassword(encryptedPassword);

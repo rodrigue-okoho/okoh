@@ -56,10 +56,11 @@ public class UserAccountResource {
         log.debug("REST request to save UserAccount : {}", userAccountDTO);
     
         UserAccountDTO result = userAccountService.save(userAccountDTO);
-        return ResponseEntity
+        return ResponseEntity.ok(result);
+/*        return ResponseEntity
             .created(new URI("/api/user-accounts/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId()))
-            .body(result);
+            .body(result);*/
     }
 
     /**
